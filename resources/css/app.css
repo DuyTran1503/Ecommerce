@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.product-image {
+    @apply opacity-100;
+}
+
+.product-image-hover {
+    @apply opacity-0;
+}
+
+.relative:hover .product-image {
+    @apply opacity-0;
+}
+
+.relative:hover .product-image-hover {
+    @apply opacity-100;
+}
