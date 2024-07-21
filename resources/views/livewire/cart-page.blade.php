@@ -87,7 +87,7 @@
                         <span class="font-semibold">{{ Number::currency($grand_total, 'VND') }}</span>
                     </div>
                     @if ($cart_items)
-                        <a href="/checkout"
+                        <a href="/checkout" wire:navigate
                             class="bg-blue-500 block text-center text-white py-2 px-4 rounded-lg mt-4 w-full">Checkout</a>
                     @endif
                 </div>
