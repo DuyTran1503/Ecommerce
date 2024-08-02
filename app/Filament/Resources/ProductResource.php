@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Cupon;
 use App\Models\Product;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
@@ -100,10 +101,12 @@ class ProductResource extends Resource
                                 ->relationship('brand', 'name'),
                             Select::make("cupon_id")
                                 ->label("Discount")
-                                ->required()
                                 ->searchable()
                                 ->preload()
-                                ->relationship('cupon', 'name')
+                                ->relationship('cupon', 'name', function (Builder $query) {
+                                    return $query->where('is_active', true);
+                                })
+                                ->getOptionLabelUsing(fn ($value): ?string => Cupon::find($value)?->name)
                         ]),
                     Section::make("Status")
                         ->schema([

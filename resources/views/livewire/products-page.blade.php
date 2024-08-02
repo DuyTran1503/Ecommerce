@@ -78,8 +78,13 @@
                                         <a href="/products/{{ $item->slug }}" class="block">
                                             <img src="{{ url('storage', $item->images[0]) }}" alt=""
                                                 class="object-cover w-full h-56 mx-auto product-image transition-all duration-500 ease-in-out transform scale-100 hover:scale-110">
-                                            <img src="{{ url('storage', $item->images[1]) }}" alt=""
-                                                class="object-cover w-full h-56 mx-auto product-image-hover absolute top-0 left-0 w-full h-full opacity-0 transition-all duration-500 ease-in-out transform scale-100 hover:scale-110">
+                                            @if (isset($item->images[1]))
+                                                <img src="{{ url('storage', $item->images[1]) }}" alt=""
+                                                    class="object-cover w-full h-56 mx-auto product-image-hover absolute top-0 left-0 w-full h-full opacity-0 transition-all duration-500 ease-in-out transform scale-100 hover:scale-110">
+                                            @else
+                                                <img src="{{ url('storage', $item->images[0]) }}" alt=""
+                                                    class="object-cover w-full h-56 mx-auto product-image-hover absolute top-0 left-0 w-full h-full opacity-0 transition-all duration-500 ease-in-out transform scale-100 hover:scale-110">
+                                            @endif
                                         </a>
                                     </div>
                                     <div class="p-3 ">

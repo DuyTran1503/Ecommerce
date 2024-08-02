@@ -1,6 +1,41 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <div class="container mx-auto px-4">
-        <h1 class="text-2xl font-semibold mb-4">Shopping Cart</h1>
+        <div class="flex items-center justify-between mb-3">
+            <h1 class="text-2xl font-semibold mb-4">Shopping Cart</h1>
+            <form wire:submit.prevent='handleCupon' class="flex gap-[12px] items-end justify-center">
+                @csrf
+                <div>
+
+                    <label class="block text-gray-700 dark:text-white mb-1" for="code">
+                        Mã giảm giá
+                    </label>
+                    <input wire:model='code' x-data="{}" x-on:input-updated.window="$el.value = ''"
+                        class="rounded-lg border p-[9px] dark:bg-gray-700 dark:text-white dark:border-none {{ $code ? 'bg-gray-100' : '' }}"
+                        id="code" type="text" {{ $code ? 'disabled' : '' }}>
+                    @error('code')
+                        <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="">
+                    <button type="submit"
+                        class="bg-blue-400 border-2 mb-[5px]
+                                                 border-blue-400  rounded-lg
+                                                  px-3 py-1 hover:bg-blue-800
+                                                   hover:text-white hover:border-blue-800">
+                        <span wire:loading.remove> Confirm </span>
+                        <span wire:loading>Loading...</span>
+                    </button>
+                    <button type="button" wire:click='handleReset'
+                        class="bg-white-400 border-2 mb-[5px]
+                                                 border-cyan-700  rounded-lg
+                                                  px-3 py-1 hover:bg-cyan-700
+                                                   hover:text-white hover:border-cyan-700">
+                        <span wire:loading.remove> Reset </span>
+                        <span wire:loading>Loading...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
         <div class="flex flex-col md:flex-row gap-4">
             <div class="md:w-3/4">
                 <div class="bg-white overflow-x-auto rounded-lg shadow-md p-6 mb-4">
@@ -75,16 +110,17 @@
                     </div>
                     <div class="flex justify-between mb-2">
                         <span>Discount</span>
-                        <span>{{ Number::currency(0, 'VND') }}</span>
+                        <span>{{ Number::currency($cupon->cupon ?? 0, 'VND') }}</span>
                     </div>
                     <div class="flex justify-between mb-2">
                         <span>Shipping</span>
+
                         <span>{{ Number::currency(0, 'VND') }}</span>
                     </div>
                     <hr class="my-2">
                     <div class="flex justify-between mb-2">
                         <span class="font-semibold">Total</span>
-                        <span class="font-semibold">{{ Number::currency($grand_total, 'VND') }}</span>
+                        <span class="font-semibold">{{ Number::currency($total, 'VND') }}</span>
                     </div>
                     @if ($cart_items)
                         <a href="/checkout" wire:navigate
