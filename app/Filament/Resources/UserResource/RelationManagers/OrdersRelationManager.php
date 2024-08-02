@@ -49,7 +49,7 @@ class OrdersRelationManager extends RelationManager
                         'processing' => 'heroicon-o-arrow-path',
                         'shipped' => 'heroicon-o-truck',
                         'delivered' => 'heroicon-o-check-circle',
-                        'canceled' => 'heroicon-o-x-circle'
+                        'cancelled' => 'heroicon-o-x-circle'
                     })
                     ->sortable(),
                 TextColumn::make('payment_method')

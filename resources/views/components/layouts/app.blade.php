@@ -8,6 +8,8 @@
     <title>{{ $title ?? 'Septenary Solution' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="//unpkg.com/alpinejs" defer></script>
 
 </head>
 
@@ -20,6 +22,9 @@
 
     @livewireScripts
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+
+    <script src="{{ mix('js/app.js') }}"></script>
 
     <x-livewire-alert::scripts />
 </body>

@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/checkout', CheckoutPage::class);
     Route::get('/orders', OrdersPage::class);
-    Route::get('/orders/{order}', OrderDetailPage::class);
+    Route::get('/orders/{order_id}', OrderDetailPage::class)->name('order.show');
     //success page
     Route::get('/success', SuccessPage::class)->name('success');
     //cancel page

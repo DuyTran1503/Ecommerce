@@ -6,10 +6,11 @@ export default {
         "./resources/**/*.vue",
         "node_modules/preline/dist/*.js",
         "./app/Http/Livewire/**/*.php",
+        "./node_modules/flowbite/**/*.js",
     ],
     darkMode: "class",
     theme: {
         extend: {},
     },
-    plugins: [require("preline/plugin")],
+    plugins: [require("preline/plugin", "flowbite/plugin")],
 };
