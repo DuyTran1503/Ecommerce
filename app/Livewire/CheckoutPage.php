@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
+use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Order;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Stripe\Checkout\Session;
@@ -21,9 +23,16 @@ class CheckoutPage extends Component
     public $state;
     public $zip_code;
     public $payment_method;
-
+    public function mount()
+    {
+        $cart_items = CartManagement::getCartItems();
+        if (count($cart_items) === 0) {
+            return redirect('/products');
+        }
+    }
     public function handleClick()
     {
+        // Validation remains the same
         $this->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -34,33 +43,45 @@ class CheckoutPage extends Component
             'zip_code' => 'required',
             'payment_method' => 'required',
         ]);
+
         $cart_items = CartManagement::getCartItems();
         $line_items = [];
-        foreach ($cart_items as $key => $value) {
-            $line_items[] = [
-                'price_data' => [
-                    'currency' => 'vnd',
-                    'unit_amount' => $value['unit_amount'] * 100,
-                    'product_data' => [
-                        'name' => $value['name']
-                    ]
-                ],
-                'quantity' => $value['quantity']
+        $total_amount = 0;
+        $stripe_max = 99999999; // 99,999,999 VND
 
-            ];
+        foreach ($cart_items as $key => $value) {
+            $item_amount = $value['unit_amount'] * $value['quantity']; // Không nhân với 100
+            $total_amount += $item_amount;
+
+            $stripe_amount = min($item_amount, $stripe_max - array_sum(array_column($line_items, 'price_data.unit_amount')));
+
+            if ($stripe_amount > 0) {
+                $line_items[] = [
+                    'price_data' => [
+                        'currency' => 'vnd',
+                        'unit_amount' => $stripe_amount, // Đã là VND, không cần nhân 100
+                        'product_data' => [
+                            'name' => $value['name'] . ($stripe_amount < $item_amount ? ' (Partial payment)' : '')
+                        ]
+                    ],
+                    'quantity' => 1
+                ];
+            }
+
+            if (array_sum(array_column($line_items, 'price_data.unit_amount')) >= $stripe_max) {
+                break;
+            }
         }
+
         $order = new Order();
         $order->user_id = auth()->user()->id;
         $order->grand_total = CartManagement::grandTotalCartItem($cart_items);
         $order->payment_method = $this->payment_method;
-        $order->payment_status = 'pending';
         $order->status = 'new';
         $order->currency = 'vnd';
         $order->shipping_amount = 0;
         $order->shipping_method = 'none';
-        $order->notes = 'Order place by ' . auth()->user()->name;
-
-        $address = new Address();
+        $order->notes = 'Order placed by ' . auth()->user()->name;
 
         $address = new Address();
         $address->first_name = $this->first_name;
@@ -75,23 +96,31 @@ class CheckoutPage extends Component
 
         if ($this->payment_method == 'stripe') {
             Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $stripe_total = array_sum(array_column($line_items, 'price_data.unit_amount'));
             $sessionCheckout = Session::create([
-                'pm_types' => ['card'],
-                'customer' => auth()->user()->email,
+                'payment_method_types' => ['card'],
+                'customer_email' => auth()->user()->email,
                 'line_items' => $line_items,
                 'mode' => 'payment',
-                'success_url' => route('success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => route('success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $order->id,
                 'cancel_url' => route('cancel'),
             ]);
-            $redirect_url =  $sessionCheckout->url;
+            $redirect_url = $sessionCheckout->url;
+
+            // Update payment status
+            $order->payment_status = $stripe_total < $total_amount ? 'partial' : 'pending';
         } else {
-            $redirect_url =   route('success');
+            $redirect_url = route('success');
+            $order->payment_status = 'pending';
         }
+
         $order->save();
         $address->order_id = $order->id;
         $address->save();
         $order->items()->createMany($cart_items);
         CartManagement::clearCartItems();
+        Mail::to(request()->user())->send(new OrderPlaced($order));
         return redirect($redirect_url);
     }
     public function render()

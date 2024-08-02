@@ -88,7 +88,10 @@
                     </div>
                     @if ($cart_items)
                         <a href="/checkout" wire:navigate
-                            class="bg-blue-500 block text-center text-white py-2 px-4 rounded-lg mt-4 w-full">Checkout</a>
+                            class="bg-blue-500 block text-center text-white py-2 px-4 rounded-lg mt-4 w-full">
+                            <span wire:loading.remove>Checkout</span>
+                            <span wire:loading>Loading...</span>
+                        </a>
                     @endif
                 </div>
             </div>

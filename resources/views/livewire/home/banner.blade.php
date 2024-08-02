@@ -1,4 +1,4 @@
-<div class="w-full h-screen bg-gradient-to-r from-blue-200 to-cyan-200 py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+{{-- <div class="w-full h-screen bg-gradient-to-r from-blue-200 to-cyan-200 py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Grid -->
         <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -193,4 +193,61 @@
         </div>
         <!-- End Grid -->
     </div>
+</div> --}}
+@php
+    $imageArray = [];
+
+    foreach ($banners as $key => $value) {
+        $imageArray = $value->images;
+    }
+    $count = count($imageArray);
+@endphp
+
+
+<div id="default-carousel" class="relative w-full" x-data="{ currentSlide: 0, autoloadInterval: null }" x-init="autoloadInterval = setInterval(() => currentSlide = (currentSlide + 1) % {{ $count }}, 3500)">
+    <!-- Carousel wrapper -->
+    <div class="relative h-56 overflow-hidden md:h-screen">
+        <!-- Item 1 -->
+        @foreach ($imageArray as $index => $image)
+            <div class="hidden duration-700 ease-in-out"
+                :class="{ 'block': currentSlide === {{ $index }}, 'hidden': currentSlide !== {{ $index }} }">
+                <img class="w-full h-screen " src="{{ Storage::url($image) }}" alt="Image {{ $index + 1 }}"
+                    wire:key="banner-image-{{ $index }}">
+            </div>
+        @endforeach
+        <!-- Item 2 -->
+    </div>
+    <!-- Slider indicators -->
+    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+        @foreach ($imageArray as $index => $image)
+            <button type="button" class="w-3 h-3 rounded-full"
+                :class="{ 'bg-blue-500': currentSlide === {{ $index }} }"
+                @click="currentSlide = {{ $index }}; clearInterval(autoloadInterval); autoloadInterval = setInterval(() => currentSlide = (currentSlide + 1) % {{ $count }}, 5000)"></button>
+        @endforeach
+    </div>
+    <!-- Slider controls -->
+    <button type="button"
+        class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        @click="currentSlide = (currentSlide + {{ $count }} - 1) % {{ $count }}; clearInterval(autoloadInterval); autoloadInterval = setInterval(() => currentSlide = (currentSlide + 1) % {{ $count }}, 5000)">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30">
+            <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 1 1 5l4 4" />
+            </svg>
+            <span class="sr-only">Previous</span>
+        </span>
+    </button>
+    <button type="button"
+        class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        @click="currentSlide = (currentSlide + 1) % {{ $count }}; clearInterval(autoloadInterval); autoloadInterval = setInterval(() => currentSlide = (currentSlide + 1) % {{ $count }}, 5000)">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30">
+            <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m1 9 4-4-4-4" />
+            </svg>
+            <span class="sr-only">Next</span>
+        </span>
+    </button>
 </div>

@@ -97,7 +97,13 @@ class ProductResource extends Resource
                                 ->required()
                                 ->searchable()
                                 ->preload()
-                                ->relationship('brand', 'name')
+                                ->relationship('brand', 'name'),
+                            Select::make("cupon_id")
+                                ->label("Discount")
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->relationship('cupon', 'name')
                         ]),
                     Section::make("Status")
                         ->schema([

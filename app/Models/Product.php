@@ -34,6 +34,10 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+    public function cupon()
+    {
+        return $this->belongsTo(Cupon::class);
+    }
     public function orderItem()
     {
         return $this->hasMany(OrderItem::class);
