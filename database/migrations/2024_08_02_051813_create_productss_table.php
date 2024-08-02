@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->foreignId('brand_id')->constrained('brands')->cascadeOnDelete();
-            $table->foreignId('cupon_id')->constrained('cupons')->cascadeOnDelete();
+            $table->foreignId('cupon_id')->constrained('cupons')->cascadeOnDelete()->nullable();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('images')->nullable();

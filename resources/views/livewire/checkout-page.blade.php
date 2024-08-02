@@ -161,20 +161,13 @@
                             {{ Number::currency($grand_total, 'VND') }}
                         </span>
                     </div>
+
                     <div class="flex justify-between mb-2 font-bold">
                         <span>
-                            Taxes
+                            Discount
                         </span>
                         <span>
-                            0.00
-                        </span>
-                    </div>
-                    <div class="flex justify-between mb-2 font-bold">
-                        <span>
-                            Shipping Cost
-                        </span>
-                        <span>
-                            0.00
+                            {{ Number::currency($grand_total - $total ?? 0, 'VND') }}
                         </span>
                     </div>
                     <hr class="bg-slate-400 my-4 h-1 rounded">
@@ -183,7 +176,7 @@
                             Grand Total
                         </span>
                         <span>
-                            {{ Number::currency($grand_total, 'VND') }}
+                            {{ Number::currency($total ?? $grand_total, 'VND') }}
                         </span>
                     </div>
                     </hr>

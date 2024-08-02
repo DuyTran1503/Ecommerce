@@ -62,7 +62,8 @@ class ProductsPage extends Component
         if ($this->sort == 'price') {
             $query->orderBy('price');
         }
-        $products = $query->paginate(10);
+        $products = $query->paginate(9);
+        // dd($products);
 
         $categories = Category::query()->where("is_active", 1)->get();
         $brands = Brand::where('is_active', 1)->get();

@@ -38,7 +38,7 @@
                     <p class="mb-2 text-sm font-medium leading-5 text-gray-800 dark:text-gray-400 ">
                         Total: </p>
                     <p class="text-base font-semibold leading-4 text-blue-600 dark:text-gray-400">
-                        {{ Number::currency($order->grand_total, 'VND') }}</p>
+                        {{ Number::currency($order->total, 'VND') }}</p>
                 </div>
                 <div class="w-full px-4 mb-4 md:w-1/4">
                     <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
@@ -63,7 +63,7 @@
                                 <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Discount
                                 </p>
                                 <p class="text-base leading-4 text-gray-600 dark:text-gray-400">
-                                    {{ Number::currency(0, 'VND') }}</p>
+                                    {{ Number::currency($order->discount, 'VND') }}</p>
                             </div>
                             <div class="flex items-center justify-between w-full">
                                 <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Shipping</p>
@@ -74,7 +74,7 @@
                         <div class="flex items-center justify-between w-full">
                             <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">Total</p>
                             <p class="text-base font-semibold leading-4 text-gray-600 dark:text-gray-400">
-                                {{ Number::currency($order->grand_total, 'VND') }}
+                                {{ Number::currency($order->total, 'VND') }}
                             </p>
                         </div>
                     </div>

@@ -23,6 +23,7 @@ class CheckoutPage extends Component
     public $state;
     public $zip_code;
     public $payment_method;
+
     public function mount()
     {
         $cart_items = CartManagement::getCartItems();
@@ -72,10 +73,12 @@ class CheckoutPage extends Component
                 break;
             }
         }
-
+        $total = $_COOKIE['total'];
         $order = new Order();
         $order->user_id = auth()->user()->id;
         $order->grand_total = CartManagement::grandTotalCartItem($cart_items);
+        $order->total =  $total;
+        $order->discount = $order->grand_total - $total;
         $order->payment_method = $this->payment_method;
         $order->status = 'new';
         $order->currency = 'vnd';
@@ -121,6 +124,7 @@ class CheckoutPage extends Component
         $order->items()->createMany($cart_items);
         CartManagement::clearCartItems();
         Mail::to(request()->user())->send(new OrderPlaced($order));
+        setcookie('total', '', time() - 60, '/');
         return redirect($redirect_url);
     }
     public function render()
@@ -128,8 +132,10 @@ class CheckoutPage extends Component
         $cart_items = CartManagement::getCartItems();
         $grand_total = CartManagement::grandTotalCartItem($cart_items);
         // $address = Address::query()->get();
-        // dd($cart_items);
+        if (isset($_COOKIE['total'])) {
+            $total = $_COOKIE['total']; // Lấy giá trị của cookie 'total'  
+        }
 
-        return view('livewire.checkout-page', compact('cart_items', 'grand_total'));
+        return view('livewire.checkout-page', compact('cart_items', 'grand_total', 'total'));
     }
 }
