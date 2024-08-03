@@ -167,7 +167,7 @@
                             Discount
                         </span>
                         <span>
-                            {{ Number::currency($grand_total - $total ?? 0, 'VND') }}
+                            {{ Number::currency($discount, 'VND') }}
                         </span>
                     </div>
                     <hr class="bg-slate-400 my-4 h-1 rounded">
@@ -176,7 +176,7 @@
                             Grand Total
                         </span>
                         <span>
-                            {{ Number::currency($total ?? $grand_total, 'VND') }}
+                            {{ Number::currency($grand_total - $discount, 'VND') }}
                         </span>
                     </div>
                     </hr>

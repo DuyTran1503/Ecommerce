@@ -132,10 +132,13 @@ class CheckoutPage extends Component
         $cart_items = CartManagement::getCartItems();
         $grand_total = CartManagement::grandTotalCartItem($cart_items);
         // $address = Address::query()->get();
+        $total = 0;
+        $discount = 0;
         if (isset($_COOKIE['total'])) {
             $total = $_COOKIE['total']; // Lấy giá trị của cookie 'total'  
         }
+        $discount = (isset($_COOKIE['total']) ? $grand_total - $total : 0);
 
-        return view('livewire.checkout-page', compact('cart_items', 'grand_total', 'total'));
+        return view('livewire.checkout-page', compact('cart_items', 'grand_total', 'total', "discount"));
     }
 }
